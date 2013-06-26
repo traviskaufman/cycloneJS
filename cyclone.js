@@ -20,13 +20,13 @@
   var _toString = __call__.bind({}.toString);
   var _forEach = __call__.bind([].forEach);
 
-  function _iSClone(input, mMap, refs) {
+  function _iSClone(input, mMap) {
     if (input === null) {
       return null;
     }
 
     if (typeof input === 'object') {
-      return _handleObjectClone(input, mMap, refs);
+      return _handleObjectClone(input, mMap);
     }
 
     return input;
@@ -46,7 +46,7 @@
     return _selfReferenceVal;
   }
 
-  function _handleObjectClone(input, mMap, refs) {
+  function _handleObjectClone(input, mMap) {
     var _selfRef = _findSelfReference(input, mMap);
     if (_selfRef !== null) {
       return _selfRef;
@@ -55,6 +55,7 @@
     var val = input.valueOf();
     var obType = _toString(input);
     var output;
+    var isCollection = false;
 
     switch (obType) {
       case '[object String]':
@@ -79,14 +80,12 @@
 
       case '[object Array]':
         output = new Array(input.length);
-        refs.push({input: input, output: output});
-        output = _handleEnumClone(input, output, mMap, refs);
+        isCollection = true;
         break;
 
       case '[object Object]':
         output = {};
-        refs.push({input: input, output: output});
-        output = _handleEnumClone(input, output, mMap, refs);
+        isCollection = true;
         break;
 
       default:
@@ -97,35 +96,27 @@
 
     mMap.push({input: input, output: output});
 
-    return output;
-  }
-
-  function _handleEnumClone(input, output, mMap, refs) {
-    var prop;
-    var propVal;
-    var selfRef;
-
-    for (prop in input) {
-      if (_hasProp(input, prop)) {
-        propVal = input[prop];
-        selfRef = _findSelfReference(propVal, refs);
-
-        if (propVal === input) { // Cyclic dependency
-          output[prop] = output;
-        } else if (selfRef !== null) { // Nested cyclic dependency! Oh my!
-          output[prop] = selfRef;
-        } else {
-          output[prop] = _iSClone(propVal, mMap, refs);
-        }
-      }
+    if (isCollection) {
+      _handleCollectionClone(input, output, mMap);
     }
 
     return output;
   }
 
+  function _handleCollectionClone(input, output, mMap) {
+    var prop;
+
+    for (prop in input) {
+      if (_hasProp(input, prop)) {
+        propVal = input[prop];
+        output[prop] = _iSClone(input[prop], mMap);
+      }
+    }
+  }
+
   var CY = {
     clone: function(input) {
-      return _iSClone(input, [], []);
+      return _iSClone(input, []);
     }
   };
 
