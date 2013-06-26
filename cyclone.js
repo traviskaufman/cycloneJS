@@ -84,7 +84,12 @@
         break;
 
       case '[object Object]':
-        output = {};
+        if (typeof input.constructor === 'function') {
+          output = new input.constructor();
+        } else { // Handle Object.create(null)
+          output = {};
+        }
+
         isCollection = true;
         break;
 
@@ -108,7 +113,6 @@
 
     for (prop in input) {
       if (_hasProp(input, prop)) {
-        propVal = input[prop];
         output[prop] = _iSClone(input[prop], mMap);
       }
     }
