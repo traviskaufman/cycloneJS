@@ -10,6 +10,9 @@ It is meant to be:
   `Blob`, etc (which also allows it to be synchronous in the first place).
 * Serve the <strong>majority of use cases out of the box</strong>, but also
   provide a mechanism to be extensible (coming soon).
+* Able to copy functions (including function objects) by reference.
+  <strong>This is the only property that's copied by reference.</strong>
+  See above abort serving the *majority* of use cases.
 
 It can handle objects containing:
 
