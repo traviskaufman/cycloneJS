@@ -18,7 +18,6 @@
   var __call__ = Function.prototype.call;
   var _hasProp = __call__.bind({}.hasOwnProperty);
   var _toString = __call__.bind({}.toString);
-  var _forEach = __call__.bind([].forEach);
 
   function _iSClone(input, mMap) {
     if (input === null) {
