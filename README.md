@@ -1,6 +1,3 @@
-cycloneJS: A pure-JS adaptation of the W3 structured cloning algorithm
-======================================================================
-
 Cyclone is an attempt to implement an adaptation of the HTML5 [Structured
 Cloning
 Algorithm](http://www.w3.org/TR/html5/infrastructure.html#safe-passing-of-structured-data).
