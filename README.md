@@ -13,6 +13,7 @@ It is meant to be:
 * Able to copy functions (including function objects) by reference.
   <strong>This is the only property that's copied by reference.</strong>
   See above abort serving the *majority* of use cases.
+* Able to copy DOM objects via `cloneNode`
 
 It can handle objects containing:
 
@@ -26,7 +27,10 @@ It can handle objects containing:
 * RegExp objects
 * Array objects
 * Object (or "plain") objects
-* Cyclic references to itself, including nested cyclic references.
+* In most cases, Objects instantiated with the use of a custom constructor (e.g. `function Foo() { this.bar = 'baz' }; var cloneable = new Foo();`)
+* Cyclic references to itself, including nested cyclic references
+* Cyclic references to objects within itself, including nested cyclic references to those objects
+* DOM Objects
 
 ## Usage
 ```javascript
@@ -50,8 +54,7 @@ It can handle objects containing:
 
 ## Coming Soon
 * `package.json`
-* Tests and Documentation.
-* Built-in support for cloning DOM nodes.
+* Tests
 * Ability to define your own protocols for copying unsupported and/or custom
   objects.
 * Features other people contribute.
