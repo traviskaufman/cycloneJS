@@ -1,7 +1,7 @@
 {
   "name": "cyclonejs",
   "version": "0.0.0",
-  "description": "A pure-javascript adaptation of the W3C's structured cloning algorithm, designed to provide an easy interface for deep copying complex objects",
+  "description": "A pure-javascript adaptation of the W3C's structured cloning algorithm, designed to provide an easy interface for deep copying of complex objects",
   "main": "cyclone.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
