@@ -5,10 +5,6 @@
 // cyclic references to itself, including nested cyclic references.
 //
 // Works in ES5-compatible browsers.
-//
-// @todo Tests and Dox
-// @todo structural typing for custom cloning procedures?
-// @todo optsHash?
 
 (function(root) {
   'use strict';
