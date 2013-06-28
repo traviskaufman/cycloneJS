@@ -53,7 +53,6 @@ It can handle objects containing:
 ```
 
 ## Coming Soon
-* `package.json`
 * Tests
 * Ability to define your own protocols for copying unsupported and/or custom
   objects.
