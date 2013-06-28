@@ -1,18 +1,14 @@
-/**
- * Adaptation of the HTML5 structured cloning alogrithm.
- *
- * Can recursively clone objects, including those containing number, boolean,
- * string, date, and regex objects. It can also clone objects which included
- * cyclic references to itself, including nested cyclic references.
- *
- * Works in ES5-compatible browsers.
- *
- * @todo HTMLEntities
- * @todo Tests and Dox
- * @todo Does this really work?
- * @todo structural typing for custom cloning procedures?
- * @todo optsHash?
- */
+// Cyclone.js: An Adaptation of the HTML5 structured cloning alogrithm.
+//
+// Can recursively clone objects, including those containing number, boolean,
+// string, date, and regex objects. It can also clone objects which included
+// cyclic references to itself, including nested cyclic references.
+//
+// Works in ES5-compatible browsers.
+//
+// @todo Tests and Dox
+// @todo structural typing for custom cloning procedures?
+// @todo optsHash?
 
 (function(root) {
   'use strict';
@@ -21,15 +17,13 @@
   var _hasProp = __call__.bind({}.hasOwnProperty);
   var _toString = __call__.bind({}.toString);
 
-  /**
-   * Utilities for working with transfer maps. A transfer map is defined as an
-   * object that has two properties, `inputs` and `outputs`, each of which
-   * are arrays where for any object at inputs[i], the output value that should
-   * be mapped to the cloned object for that object resides at outputs[i]. See
-   * the W3 spec for more details. This was the closest I could get without
-   * having to set custom properties on objects, which wouldn't work for
-   * immutable objects anyway.
-   */
+  // Utilities for working with transfer maps. A transfer map is defined as an
+  // object that has two properties, `inputs` and `outputs`, each of which
+  // are arrays where for any object at inputs[i], the output value that should
+  // be mapped to the cloned object for that object resides at outputs[i]. See
+  // the W3 spec for more details. This was the closest I could get without
+  // having to set custom properties on objects, which wouldn't work for
+  // immutable objects anyway.
   function TransferMap() {
     this.inputs = [];
     this.outputs = [];
@@ -103,12 +97,7 @@
         break;
 
       case '[object Object]':
-        if (typeof input.constructor === 'function') {
-          output = new input.constructor();
-        } else { // Handle Object.create(null)
-          output = {};
-        }
-
+        output = Object.create(Object.getPrototypeOf(input));
         isCollection = true;
         break;
 
