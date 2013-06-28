@@ -4,7 +4,7 @@
 // string, date, and regex objects. It can also clone objects which included
 // cyclic references to itself, including nested cyclic references.
 //
-// Works in ES5-compatible browsers.
+// Works in ES5-compatible environments.
 
 (function(root) {
   'use strict';
