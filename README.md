@@ -12,7 +12,7 @@ It is meant to be:
   provide a mechanism to be extensible (coming soon).
 * Able to copy functions (including function objects) by reference.
   <strong>This is the only property that's copied by reference.</strong>
-  See above abort serving the *majority* of use cases.
+  See above about serving the *majority* of use cases.
 * Able to copy DOM objects via `cloneNode`
 
 It can handle objects containing:
