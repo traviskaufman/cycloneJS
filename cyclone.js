@@ -15,38 +15,58 @@
  */
 
 (function(root) {
+  'use strict';
+
   var __call__ = Function.prototype.call;
   var _hasProp = __call__.bind({}.hasOwnProperty);
   var _toString = __call__.bind({}.toString);
 
-  function _iSClone(input, mMap) {
+  /**
+   * Utilities for working with transfer maps. A transfer map is defined as an
+   * object that has two properties, `inputs` and `outputs`, each of which
+   * are arrays where for any object at inputs[i], the output value that should
+   * be mapped to the cloned object for that object resides at outputs[i]. See
+   * the W3 spec for more details. This was the closest I could get without
+   * having to set custom properties on objects, which wouldn't work for
+   * immutable objects anyway.
+   */
+  function TransferMap() {
+    this.inputs = [];
+    this.outputs = [];
+  }
+
+  TransferMap.prototype.set = function(input, output) {
+    if (this.inputs.indexOf(input) === -1) {
+      this.inputs.push(input);
+      this.outputs.push(output);
+    }
+  };
+
+  TransferMap.prototype.get = function(input) {
+    var idx = this.inputs.indexOf(input);
+    var output = null;
+
+    if (idx > -1) {
+      output = this.outputs[idx];
+    }
+
+    return output;
+  };
+
+  function _iSClone(input, tMap) {
     if (input === null) {
       return null;
     }
 
     if (typeof input === 'object') {
-      return _handleObjectClone(input, mMap);
+      return _handleObjectClone(input, tMap);
     }
 
     return input;
   }
 
-  function _findSelfReference(input, mMap) {
-    var _selfReferenceVal = null;
-    var isFound = false;
-
-    mMap.forEach(function(pair) {
-      if (!isFound && pair.input === input) {
-        isFound = true;
-        _selfReferenceVal = pair.output;
-      }
-    });
-
-    return _selfReferenceVal;
-  }
-
-  function _handleObjectClone(input, mMap) {
-    var _selfRef = _findSelfReference(input, mMap);
+  function _handleObjectClone(input, tMap) {
+    var _selfRef = tMap.get(input);
     if (_selfRef !== null) {
       return _selfRef;
     }
@@ -94,32 +114,32 @@
 
       default:
         throw new TypeError(
-          "Don't know how to clone object of type ' + obType"
+          "Don't know how to clone object of type " + obType
         );
     }
 
-    mMap.push({input: input, output: output});
+    tMap.set(input, output);
 
     if (isCollection) {
-      _handleCollectionClone(input, output, mMap);
+      _handleCollectionClone(input, output, tMap);
     }
 
     return output;
   }
 
-  function _handleCollectionClone(input, output, mMap) {
+  function _handleCollectionClone(input, output, tMap) {
     var prop;
 
     for (prop in input) {
       if (_hasProp(input, prop)) {
-        output[prop] = _iSClone(input[prop], mMap);
+        output[prop] = _iSClone(input[prop], tMap);
       }
     }
   }
 
   var CY = {
     clone: function(input) {
-      return _iSClone(input, []);
+      return _iSClone(input, new TransferMap());
     }
   };
 
