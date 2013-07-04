@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/traviskaufman/cyclonejs.png)](https://travis-ci.org/traviskaufman/cyclonejs)
 [![browser support](https://ci.testling.com/traviskaufman/cyclonejs.png)](https://ci.testling.com/traviskaufman/cyclonejs)
 
 Cyclone is an attempt to implement an adaptation of the HTML5 [Structured
