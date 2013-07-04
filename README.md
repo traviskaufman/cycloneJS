@@ -1,3 +1,5 @@
+[![browser support](https://ci.testling.com/traviskaufman/cyclonejs.png)](https://ci.testling.com/traviskaufman/cyclonejs)
+
 Cyclone is an attempt to implement an adaptation of the HTML5 [Structured
 Cloning
 Algorithm](http://www.w3.org/TR/html5/infrastructure.html#safe-passing-of-structured-data).
@@ -42,18 +44,26 @@ It can handle objects containing:
   o.tricky = { self: o };
 
   var c = CY.clone(o);
-  
+
   c === o; // false
   c.date === o.date; // false
 
   +(c.date) === +(o.date); // true
-  c.number === o.number;  // true 
+  c.number === o.number;  // true
   c.self === c;  // true
   c.tricky.self === c;  // true
 ```
 
+## Testing
+First install the module
+```sh
+$ git clone https://github.com/traviskaufman/cyclonejs.git
+$ cd /path/to/cyclonejs
+$ npm install .
+```
+Then just run `npm test` within the module's directory.
+
 ## Coming Soon
-* Tests
 * Ability to define your own protocols for copying unsupported and/or custom
   objects.
 * Features other people contribute.
