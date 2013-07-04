@@ -36,6 +36,9 @@ It can handle objects containing:
 * DOM Objects
 
 ## Usage
+This module exposes a single object, `CY`, into the global scope when used within browsers. A client can then use
+this module's `clone` method to perform clone operations.
+
 ```javascript
   var o = {
     date: new Date(),
@@ -55,14 +58,21 @@ It can handle objects containing:
   c.tricky.self === c;  // true
 ```
 
-## Testing
+Note that cycloneJS also supports AMD loading as well as use within nodeJS, so with node you could do something like
+```javascript
+var CY = require('cyclonejs');
+// Do some CY.clone()-ing
+```
+
+## Contributing/Testing
 First install the module
 ```sh
 $ git clone https://github.com/traviskaufman/cycloneJS.git
 $ cd /path/to/cycloneJS
 $ npm install .
 ```
-Then just run `npm test` within the module's directory.
+Then just run `npm test` within the module's directory whenever you want to test. This will run jshint on all javascript
+files as well as run tests against cyclone.
 
 ## Coming Soon
 * Ability to define your own protocols for copying unsupported and/or custom
