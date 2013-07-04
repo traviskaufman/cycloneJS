@@ -10,8 +10,21 @@
   'use strict';
 
   var __call__ = Function.prototype.call;
-  var _hasProp = __call__.bind({}.hasOwnProperty);
-  var _toString = __call__.bind({}.toString);
+  // Many environments seem to not support nativeBind as of now so because of
+  // this we'll use our own implementation.
+  var _bind = function(fn, ctx) {
+    var slice = [].slice;
+    // Like native bind, an arbitrary amount of arguments can be passed into
+    // this function which will automatically be bound to it whenever it's
+    // called.
+    var boundArgs = slice.call(arguments, 2);
+
+    return function() {
+      return fn.apply(ctx, boundArgs.concat(slice.call(arguments)));
+    };
+  };
+  var _hasProp = _bind(__call__, {}.hasOwnProperty);
+  var _toString = _bind(__call__, {}.toString);
 
   // Utilities for working with transfer maps. A transfer map is defined as an
   // object that has two properties, `inputs` and `outputs`, each of which
