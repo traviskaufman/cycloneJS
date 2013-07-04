@@ -108,7 +108,7 @@
         break;
 
       case '[object RegExp]':
-        output = new RegExp(val);
+        output = _handleRegExpClone(val);
         break;
 
       case '[object Array]':
@@ -147,6 +147,24 @@
     }
 
     return output;
+  }
+
+  // Handles the safe cloning of RegExp objects, where we explicitly pass the
+  // regex object the source and flags separately, as this prevents bugs
+  // within phantomJS (and possibly other environments as well).
+  function _handleRegExpClone(re) {
+    var flags = '';
+    if (re.global) {
+      flags += 'g';
+    }
+    if (re.ignoreCase) {
+      flags += 'i';
+    }
+    if (re.multiline) {
+      flags += 'm';
+    }
+
+    return new RegExp(re.source, flags);
   }
 
   // Handles the recursive portion of structured cloning.
