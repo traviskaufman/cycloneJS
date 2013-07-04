@@ -4,7 +4,7 @@
   "description": "A pure-javascript adaptation of the W3C's structured cloning algorithm, designed to provide an easy interface for deep copying of complex objects",
   "main": "cyclone.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec test/cyclone.mspec.js"
+    "test": "./node_modules/.bin/jshint *.js test/*.js && ./node_modules/.bin/mocha --reporter spec test/cyclone.mspec.js"
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,8 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "mocha": "~1.12.0",
-    "expect.js": "~0.2.0"
+    "expect.js": "~0.2.0",
+    "jshint": "~2.1.4"
   },
   "testling": {
     "harness": "mocha",

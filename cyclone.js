@@ -90,7 +90,11 @@
 
     switch (obType) {
       // These cases follow the W3C's specification for how certain objects
-      // are handled.
+      // are handled. Note that jshint will complain about using Object wrappers
+      // for primitives (as it should), but we have to handle this case should
+      // the client pass one in.
+
+      /*jshint -W053 */
       case '[object String]':
         output = new String(val);
         break;
