@@ -18,5 +18,9 @@
   ],
   "author": "Travis Kaufman <travis.kaufman@gmail.com>",
   "license": "MIT",
-  "readmeFilename": "README.md"
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "mocha": "~1.12.0",
+    "expectjs": "0.0.15"
+  }
 }
