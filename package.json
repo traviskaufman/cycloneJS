@@ -26,7 +26,7 @@
   },
   "testling": {
     "harness": "mocha",
-    "files": "tests/cyclone.mspec.js",
+    "files": "test/cyclone.mspec.js",
     "browsers": {
       "ie": [
         9,
