@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/traviskaufman/cyclonejs.png)](https://travis-ci.org/traviskaufman/cyclonejs)
-[![browser support](https://ci.testling.com/traviskaufman/cyclonejs.png)](https://ci.testling.com/traviskaufman/cyclonejs)
+[![Build Status](https://travis-ci.org/traviskaufman/cycloneJS.png)](https://travis-ci.org/traviskaufman/cycloneJS)
+[![browser support](https://ci.testling.com/traviskaufman/cycloneJS.png)](https://ci.testling.com/traviskaufman/cycloneJS)
 
 Cyclone is an attempt to implement an adaptation of the HTML5 [Structured
 Cloning
@@ -58,8 +58,8 @@ It can handle objects containing:
 ## Testing
 First install the module
 ```sh
-$ git clone https://github.com/traviskaufman/cyclonejs.git
-$ cd /path/to/cyclonejs
+$ git clone https://github.com/traviskaufman/cycloneJS.git
+$ cd /path/to/cycloneJS
 $ npm install .
 ```
 Then just run `npm test` within the module's directory.
