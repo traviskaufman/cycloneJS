@@ -65,6 +65,8 @@
   // Regex used to test whether or not an object could be an HTML Element.
   var _htmlElementRE = /^\[object\sHTML(.*?)Element\]$/;
 
+  var _customCloneProcedures = [];
+
   // Performs the "internal structured clone" portion of the structured cloning
   // algorithm. `input` is any valid object, and `tMap` is a(n empty)
   // TransferMap instance.
@@ -88,6 +90,14 @@
     var _selfRef = tMap.get(input);
     if (_selfRef !== null) {
       return _selfRef;
+    }
+
+    // We also check up front to make sure that a client-defined custom
+    // procedure has not been registered for this type of object. If it has,
+    // it takes priority over any of the implementations below.
+    var _cloneAttempt = _attemptCustomClone(input);
+    if (typeof _cloneAttempt !== 'undefined') {
+      return _cloneAttempt;
     }
 
     // Most supported object types can be copied just be creating a new
@@ -201,11 +211,45 @@
     }
   }
 
+  function _attemptCustomClone(obj) {
+    var proc;
+    var copy;
+    var procIdx = _customCloneProcedures.length;
+    // Note that if two procedures passed in detect the same type of object,
+    // the latest procedure will take priority.
+    while (procIdx--) {
+      proc = _customCloneProcedures[procIdx];
+      if (proc.detect(obj)) {
+        copy = proc.copy(obj);
+      }
+    }
+
+    return copy;
+  }
+
   // This is the module that we expose to the rest of the world, with one
   // singular method. CY.clone...get it? :)
   var CY = {
     clone: function(input) {
       return _iSClone(input, new TransferMap());
+    },
+
+    // Returns true if procedure is successfullly defined, false otherwise.
+    defineCloneProcedure: function(procObj) {
+      // Make sure we can use this procedure
+      if (typeof procObj === 'object' &&
+          typeof procObj.detect === 'function' &&
+          typeof procObj.copy === 'function') {
+
+        _customCloneProcedures.push(procObj);
+        return true;
+      }
+
+      return false;
+    },
+
+    clearCustomCloneProcedures: function() {
+      _customCloneProcedures = [];
     }
   };
 

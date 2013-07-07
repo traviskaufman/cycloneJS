@@ -154,8 +154,7 @@ describe('cycloneJS', function() {
     });
   });
 
-  // Not yet implemented
-  xdescribe('Custom cloning procedures', function() {
+  describe('Custom cloning procedures', function() {
     function Person(name) {
       this.name = name;
     }
@@ -187,6 +186,13 @@ describe('cycloneJS', function() {
       expect(whackAssPretender).not.to.be(theRealSlimShady);
       expect(whackAssPretender.greet()).to.be('Hi! My name is Otha Slim Shady');
     });
+
+    it('gives precedence to procedures that are passed in at a later time');
+    it('returns true on successful definition');
+    it('returns false on unsuccessful definition');
+    it("won't create a definition if an object isn't passed in");
+    it("won't create a definition if the object doesn't have a `detect` function");
+    it("wont' create a definition if the object doesn't have a `copy` function");
   });
 
   describe('edge cases', function() {
