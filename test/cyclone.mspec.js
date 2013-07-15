@@ -20,7 +20,7 @@ describe('cycloneJS', function() {
     var props;
     var prop;
     if (r1 instanceof RegExp && r2 instanceof RegExp) {
-      props = ["global", "multiline", "ignoreCase", "source"];
+      props = ['global', 'multiline', 'ignoreCase', 'source'];
         for (var i = 0; i < props.length; i++) {
           prop = props[i];
             if (r1[prop] !== r2[prop]) {
@@ -84,7 +84,9 @@ describe('cycloneJS', function() {
       }
 
       it('clones number objects', function() {
-        expect(_isClonedWrapper(original.numberObj, clone.numberObj)).to.be(true);
+        expect(
+          _isClonedWrapper(original.numberObj, clone.numberObj)
+        ).to.be(true);
       });
 
       it('clones regex objects', function() {
@@ -97,7 +99,9 @@ describe('cycloneJS', function() {
       });
 
       it('clones string objects', function() {
-        expect(_isClonedWrapper(original.stringObj, clone.stringObj)).to.be(true);
+        expect(
+          _isClonedWrapper(original.stringObj, clone.stringObj)
+        ).to.be(true);
       });
     });
 
@@ -130,7 +134,9 @@ describe('cycloneJS', function() {
 
       it('GOES DEEPER!!!!', function() {
         // WE CAN GO DEEPER!
-        expect(original.object.nested.array).not.to.be(clone.object.nested.array);
+        expect(original.object.nested.array).not.to.be(
+          clone.object.nested.array
+        );
         expect(original.object.nested.array).to.eql(clone.object.nested.array);
       });
     });
@@ -177,7 +183,7 @@ describe('cycloneJS', function() {
         detect: function(obj) {
           return (obj instanceof Person && obj.name === eminem);
         },
-        copy: function(obj) {
+        copy: function() {
           return new Person('Otha Slim Shady');
         }
       });
@@ -187,16 +193,60 @@ describe('cycloneJS', function() {
       expect(whackAssPretender.greet()).to.be('Hi! My name is Otha Slim Shady');
     });
 
-    it('gives precedence to procedures that are passed in at a later time');
-    it('returns true on successful definition');
-    it('returns false on unsuccessful definition');
-    it("won't create a definition if an object isn't passed in");
-    it("won't create a definition if the object doesn't have a `detect` function");
-    it("wont' create a definition if the object doesn't have a `copy` function");
+    it('gives precedence to procs that defined at a later time', function() {
+      var detectFn = function(obj) {
+        return (obj.name === 'eminem');
+      };
+
+      CY.defineCloneProcedure({
+        detect: detectFn,
+        copy: function() {
+          return 'Kim';
+        };
+      });
+
+      CY.defineCloneProcedure({
+        detect: detectFn,
+        copy: function() {
+          return eminem;
+        }
+      });
+
+      expect(CY.clone(theRealSlimShady)).to.be(eminem);
+    });
+
+    it('returns true on successful definition', function() {
+      expect(CY.defineCloneProcedure({
+        detect: function(obj) { return obj === true; },
+        copy: function(obj) { return new Boolean(obj) }
+      })).to.be(true);
+    });
+
+    it('returns false on unsuccessful definition', function() {
+      expect(CY.defineCloneProcedure({})).to.be(false);
+    });
+
+    it("will fail if an object isn't passed in", function() {
+      expect(CY.defineCloneProcedure('herp')).to.be(false);
+    });
+
+    it('will fail if the object lacks a `detect` function', function() {
+      expect(CY.defineCloneProcedure({
+        detect: 'nope',
+        copy: function() {}
+      })).to.be(false);
+    });
+
+    it('will fail if the object lacks a `copy` function', function() {
+      expect(CY.defineCloneProcedure({
+        detect: function() {},
+        copy: 'nope'
+      })).to.be(false);
+    });
   });
 
   describe('edge cases', function() {
-    it('returns the value of a primitive if it is explicitly passed one', function() {
+    it('returns the value of a primitive if explicitly passed one', function() {
       expect(CY.clone(1)).to.be(1);
       expect(CY.clone('hey')).to.be('hey');
       expect(CY.clone(false)).to.be(false);
