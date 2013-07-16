@@ -6,13 +6,6 @@ var expect = require('expect.js');
 
 describe('cycloneJS', function() {
   var original;
-  var number = Math.random();
-  var regex = /^someRE$/g;
-  var bool = false;
-  var string = 'hey';
-  var date = new Date();
-  var array = [1, 2, 3];
-  var object = {};
 
   // http://stackoverflow.com/questions/10776600/
   // testing-for-equality-of-regular-expressions
@@ -21,13 +14,13 @@ describe('cycloneJS', function() {
     var prop;
     if (r1 instanceof RegExp && r2 instanceof RegExp) {
       props = ['global', 'multiline', 'ignoreCase', 'source'];
-        for (var i = 0; i < props.length; i++) {
-          prop = props[i];
-            if (r1[prop] !== r2[prop]) {
-              return false;
-            }
+      for (var i = 0; i < props.length; i++) {
+        prop = props[i];
+          if (r1[prop] !== r2[prop]) {
+            return false;
           }
-          return true;
+        }
+      return true;
     }
     return false;
   }
@@ -167,10 +160,11 @@ describe('cycloneJS', function() {
     Person.prototype.greet = function() {
       return 'Hi! My name is ' + this.name;
     };
-    var eminem = 'The Real Shady';
+    var eminem;
     var theRealSlimShady;
 
     beforeEach(function() {
+      eminem = 'The Real Shady';
       theRealSlimShady = new Person(eminem);
     });
 
@@ -193,16 +187,16 @@ describe('cycloneJS', function() {
       expect(whackAssPretender.greet()).to.be('Hi! My name is Otha Slim Shady');
     });
 
-    it('gives precedence to procs that defined at a later time', function() {
+    it('gives precedence to procs defined at a later time', function() {
       var detectFn = function(obj) {
-        return (obj.name === 'eminem');
+        return (obj.name === eminem);
       };
 
       CY.defineCloneProcedure({
         detect: detectFn,
         copy: function() {
           return 'Kim';
-        };
+        }
       });
 
       CY.defineCloneProcedure({
@@ -218,7 +212,7 @@ describe('cycloneJS', function() {
     it('returns true on successful definition', function() {
       expect(CY.defineCloneProcedure({
         detect: function(obj) { return obj === true; },
-        copy: function(obj) { return new Boolean(obj) }
+        copy: function(obj) { return 'true'; }
       })).to.be(true);
     });
 
