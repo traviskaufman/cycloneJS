@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>cyclone.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>cyclone.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="comment">/**
+ * Cyclone.js: An Adaptation of the HTML5 structured cloning alogrithm.
+ * @author Travis Kaufman &lt;travis.kaufman@gmail.com&gt;
+ * @license MIT
+ */</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>This module can recursively clone objects, including those containing
+number, boolean, string, date, and regex objects. It can also clone objects
+which include cyclic references to itself, including nested cyclic
+references. It is tested in all ES5-compatible environments.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>(<span class="keyword">function</span>(root) {
+  <span class="string">'use strict'</span>;
+
+  <span class="keyword">var</span> __call__ = Function.prototype.call;
+  <span class="keyword">var</span> _hasProp = _bind(__call__, {}.hasOwnProperty);
+  <span class="keyword">var</span> _toString = _bind(__call__, {}.toString);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Many environments seem to not support ES5&#39;s native bind as of now.
+Because of this, we&#39;ll use our own implementation.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">function</span> <span class="title">_bind</span><span class="params">(fn, ctx)</span> {</span>
+    <span class="keyword">var</span> slice = [].slice;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Like native bind, an arbitrary amount of arguments can be passed into
+this function which will automatically be bound to it whenever it&#39;s
+called.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">var</span> boundArgs = slice.call(arguments, <span class="number">2</span>);
+
+    <span class="keyword">return</span> <span class="keyword">function</span>() {
+      <span class="keyword">return</span> fn.apply(ctx, boundArgs.concat(slice.call(arguments)));
+    };
+  }
+
+  <span class="function"><span class="keyword">function</span> <span class="title">_isFunc</span><span class="params">(obj)</span> {</span>
+    <span class="keyword">return</span> (<span class="keyword">typeof</span> obj === <span class="string">'function'</span>);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>We shim ES6&#39;s Map here if it&#39;s not in the environment already. Although
+it would be better to use WeakMaps here, this is impossible to do with ES5
+since references to objects won&#39;t be garbage collected if they&#39;re still
+in the map, so it&#39;s better to keep the implementation consistent.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">var</span> Map = _isFunc(root.Map) ? root.Map : <span class="function"><span class="keyword">function</span> <span class="title">Map</span><span class="params">()</span> {</span>
+    Object.defineProperties(<span class="keyword">this</span>, {
+      inputs: {
+        value: [],
+        enumerable: <span class="literal">false</span>
+      },
+      outputs: {
+        value: [],
+        enumerable: <span class="literal">false</span>
+      }
+    });
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>All we need are the <code>get</code> and <code>set</code> public-facing methods so we shim just
+them.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">if</span> (!_isFunc(Map.prototype.set)) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Map a given <code>input</code> object to a given <code>output</code> object. Relatively
+straightforward.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    Map.prototype.set = <span class="keyword">function</span>(input, output) {
+      <span class="keyword">var</span> inputIdx = <span class="keyword">this</span>.inputs.indexOf(input);
+      <span class="keyword">if</span> (inputIdx === -<span class="number">1</span>) {
+        <span class="keyword">this</span>.inputs.push(input);
+        <span class="keyword">this</span>.outputs.push(output);
+      } <span class="keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Associate this input with the new output.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="keyword">this</span>.outputs[inputIdx] = output;
+      }
+    };
+  }
+
+  <span class="keyword">if</span> (!_isFunc(Map.prototype.get)) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Retrieve the object that&#39;s mapped to <code>input</code>, or null if input is not
+found within the transfer map.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    Map.prototype.get = <span class="keyword">function</span>(input) {
+      <span class="keyword">var</span> idx = <span class="keyword">this</span>.inputs.indexOf(input);
+      <span class="keyword">var</span> output = <span class="literal">null</span>;
+
+      <span class="keyword">if</span> (idx &gt; -<span class="number">1</span>) {
+        output = <span class="keyword">this</span>.outputs[idx];
+      }
+
+      <span class="keyword">return</span> output;
+    };
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Regex used to test whether or not an object could be an HTML Element.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">var</span> _htmlElementRE = <span class="regexp">/^\[object\sHTML(.*?)Element\]$/</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Any custom cloning procedures defined by the client will be stored here.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">var</span> _customCloneProcedures = [];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Performs the &quot;internal structured clone&quot; portion of the structured cloning
+algorithm. <code>input</code> is any valid object, and <code>mMap</code> is a(n empty)
+Map instance.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">function</span> <span class="title">_iSClone</span><span class="params">(input, mMap)</span> {</span>
+    <span class="keyword">if</span> (input === <span class="literal">null</span>) {
+      <span class="keyword">return</span> <span class="literal">null</span>;
+    }
+
+    <span class="keyword">if</span> (<span class="keyword">typeof</span> input === <span class="string">'object'</span>) {
+      <span class="keyword">return</span> _handleObjectClone(input, mMap);
+    }
+
+    <span class="keyword">return</span> input;
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Here lies the meat and potatoes of the algorithm. <code>_handleObjectClone</code>
+is responsible for creating deep copies of complex objects. Its parameters
+are the same as for <code>_isClone</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">function</span> <span class="title">_handleObjectClone</span><span class="params">(input, mMap)</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>First we make sure that we aren&#39;t dealing with a circular reference.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">var</span> _selfRef = mMap.get(input);
+    <span class="keyword">if</span> (_selfRef !== <span class="literal">null</span>) {
+      <span class="keyword">return</span> _selfRef;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>We also check up front to make sure that a client-defined custom
+procedure has not been registered for this type of object. If it has,
+it takes priority over any of the implementations below.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">var</span> _cloneAttempt = _attemptCustomClone(input);
+    <span class="keyword">if</span> (<span class="keyword">typeof</span> _cloneAttempt !== <span class="string">'undefined'</span>) {
+      <span class="keyword">return</span> _cloneAttempt;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Most supported object types can be copied simply by creating a new
+instance of the object using its current value, so we save that in this
+variable.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">var</span> val = input.valueOf();
+    <span class="keyword">var</span> obType = _toString(input);
+    <span class="keyword">var</span> output;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>We define a collection as either an array of Objects other than String,
+Number, Boolean, Date, or RegExp objects. Basically it&#39;s any structure
+where recursive cloning may be necessary.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">var</span> isCollection = <span class="literal">false</span>;
+
+    <span class="keyword">switch</span> (obType) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>These cases follow the W3C&#39;s specification for how certain objects
+are handled. Note that jshint will complain about using Object
+wrappers for primitives (as it should), but we have to handle this
+case should the client pass one in.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="comment">/*jshint -W053 */</span>
+      <span class="keyword">case</span> <span class="string">'[object String]'</span>:
+        output = <span class="keyword">new</span> String(val);
+        <span class="keyword">break</span>;
+
+      <span class="keyword">case</span> <span class="string">'[object Number]'</span>:
+        output = <span class="keyword">new</span> Number(val);
+        <span class="keyword">break</span>;
+
+      <span class="keyword">case</span> <span class="string">'[object Boolean]'</span>:
+        output = <span class="keyword">new</span> Boolean(val);
+        <span class="keyword">break</span>;
+
+      <span class="keyword">case</span> <span class="string">'[object Date]'</span>:
+        output = <span class="keyword">new</span> Date(val);
+        <span class="keyword">break</span>;
+
+      <span class="keyword">case</span> <span class="string">'[object RegExp]'</span>:
+        output = _handleRegExpClone(val);
+        <span class="keyword">break</span>;
+
+      <span class="keyword">case</span> <span class="string">'[object Array]'</span>:
+        output = <span class="keyword">new</span> Array(input.length);
+        isCollection = <span class="literal">true</span>;
+        <span class="keyword">break</span>;
+
+      <span class="keyword">case</span> <span class="string">'[object Object]'</span>:</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Although the spec says to simply create an empty object when
+encountered with this scenario, we set up the proper prototype chain
+in order to correctly copy objects that may not directly inherit
+from Object.prototype.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        output = Object.create(Object.getPrototypeOf(input));
+        isCollection = <span class="literal">true</span>;
+        <span class="keyword">break</span>;
+
+      <span class="keyword">default</span>:</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>If it&#39;s an HTML Element, try to clone it.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="keyword">if</span> (_htmlElementRE.test(obType) &amp;&amp;
+            _isFunc(input.cloneNode)) {
+
+          output = input.cloneNode();
+        } <span class="keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Otherwise just throw an error.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="keyword">throw</span> <span class="keyword">new</span> TypeError(
+            <span class="string">"Don't know how to clone object of type "</span> + obType
+          );
+        }
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>Map this specific object to its output in case its cyclically referenced</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    mMap.set(input, output);
+
+    <span class="keyword">if</span> (isCollection) {
+      _handleCollectionClone(input, output, mMap);
+    }
+
+    <span class="keyword">return</span> output;
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Handles the safe cloning of RegExp objects, where we explicitly pass the
+regex object, the source, and flags separately, as this prevents bugs
+within phantomJS (and possibly other environments as well).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">function</span> <span class="title">_handleRegExpClone</span><span class="params">(re)</span> {</span>
+    <span class="keyword">var</span> flags = <span class="string">''</span>;
+    <span class="keyword">if</span> (re.global) {
+      flags += <span class="string">'g'</span>;
+    }
+    <span class="keyword">if</span> (re.ignoreCase) {
+      flags += <span class="string">'i'</span>;
+    }
+    <span class="keyword">if</span> (re.multiline) {
+      flags += <span class="string">'m'</span>;
+    }
+
+    <span class="keyword">return</span> <span class="keyword">new</span> RegExp(re.source, flags);
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Handles the recursive portion of structured cloning.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">function</span> <span class="title">_handleCollectionClone</span><span class="params">(input, output, mMap)</span> {</span>
+    <span class="keyword">var</span> prop;
+
+    <span class="keyword">for</span> (prop <span class="keyword">in</span> input) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Note that we use the hasOwnProperty guard here since we&#39;ve already
+used <code>Object.create()</code> to create the duplicate, so we have
+already acquired the original object&#39;s prototype. Note that the W3C
+spec explicitly states that this algorithm does <em>not</em> walk the
+prototype chain, and therefore all Object prototypes are live
+(assigned as a reference).</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="keyword">if</span> (_hasProp(input, prop)) {
+        output[prop] = _iSClone(input[prop], mMap);
+      }
+    }
+  }
+
+  <span class="function"><span class="keyword">function</span> <span class="title">_attemptCustomClone</span><span class="params">(obj)</span> {</span>
+    <span class="keyword">var</span> proc;
+    <span class="keyword">var</span> copy;
+    <span class="keyword">var</span> procIdx = _customCloneProcedures.length;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>Note that if two procedures passed in detect the same type of object,
+the latest procedure will take priority.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">while</span> (procIdx--) {
+      console.log(<span class="string">'procIdx:'</span>, procIdx);
+      proc = _customCloneProcedures[procIdx];
+      <span class="keyword">if</span> (proc.detect(obj)) {
+        copy = proc.copy(obj);
+        <span class="keyword">break</span>;
+      }
+    }
+
+    <span class="keyword">return</span> copy;
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>This is the module that we expose to the rest of the world.
+CY.clone...get it? :)</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">var</span> CY = {
+    clone: <span class="keyword">function</span>(input) {
+      <span class="keyword">return</span> _iSClone(input, <span class="keyword">new</span> Map());
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <p>Returns true if the procedure is successfullly defined, false otherwise.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    defineCloneProcedure: <span class="keyword">function</span>(procObj) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <p>Make sure we can use this procedure</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="keyword">if</span> (<span class="keyword">typeof</span> procObj === <span class="string">'object'</span> &amp;&amp;
+          _isFunc(procObj.detect) &amp;&amp;
+          _isFunc(procObj.copy)) {
+
+        _customCloneProcedures.push(procObj);
+        <span class="keyword">return</span> <span class="literal">true</span>;
+      }
+
+      <span class="keyword">return</span> <span class="literal">false</span>;
+    },
+
+    clearCustomCloneProcedures: <span class="keyword">function</span>() {
+      _customCloneProcedures = [];
+    }
+  };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>Finally we take care of exporting business.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">if</span> (<span class="keyword">typeof</span> module === <span class="string">'object'</span> &amp;&amp; <span class="keyword">typeof</span> module.exports === <span class="string">'object'</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>Node</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    module.exports = CY;
+  } <span class="keyword">else</span> <span class="keyword">if</span> (_isFunc(define) &amp;&amp; _isFunc(require)) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>AMD/RequireJS</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    define([], <span class="keyword">function</span>() { <span class="keyword">return</span> CY; });
+  } <span class="keyword">else</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-33">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-33">&#182;</a>
+              </div>
+              <p>Browser or some other environment. Simply attach the module to the root
+object.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    root.CY = CY;
+  }
+})(<span class="keyword">this</span>);</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
