@@ -240,7 +240,6 @@
     // Note that if two procedures passed in detect the same type of object,
     // the latest procedure will take priority.
     while (procIdx--) {
-      console.log('procIdx:', procIdx);
       proc = _customCloneProcedures[procIdx];
       if (proc.detect(obj)) {
         copy = proc.copy(obj);
