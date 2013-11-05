@@ -33,7 +33,6 @@ It can handle objects containing:
 * In most cases, Objects instantiated with the use of a custom constructor (e.g. `function Foo() { this.bar = 'baz' }; var cloneable = new Foo();`)
 * Cyclic references to itself, including nested cyclic references
 * Cyclic references to objects within itself, including nested cyclic references to those objects
-* DOM Objects
 
 ## Usage
 This module exposes a single object, `CY`, into the global scope when used within browsers. A client can then use
@@ -58,7 +57,7 @@ this module's `clone` method to perform clone operations.
   c.tricky.self === c;  // true
 ```
 
-Note that cycloneJS also supports AMD loading as well as use within nodeJS, so with node you could do something like
+Note that cycloneJS also supports AMD loading as well as use within nodeJS/CJS environments, so with node you could do something like
 ```javascript
 var CY = require('cyclonejs');
 // Do some CY.clone()-ing

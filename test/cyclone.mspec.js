@@ -132,6 +132,13 @@ describe('cycloneJS', function() {
         );
         expect(original.object.nested.array).to.eql(clone.object.nested.array);
       });
+
+      it("throws an error if it doesn't know how to clone an object", function() {
+        original.f = function() {};
+        expect(function() {
+          CY.clone(original);
+        }).to.throwError();
+      });
     });
   }); // Basic Functionality
 
@@ -252,6 +259,17 @@ describe('cycloneJS', function() {
 
     it('returns undefined when passed undefined', function() {
       expect(CY.clone(undefined)).to.be(undefined);
+    });
+  });
+
+  describe('options for CY.clone', function() {
+    it('has an `allowFunctions` option that will pass functions through', function() {
+      var copy;
+      original.f = function() {};
+      copy = CY.clone(original, {
+        allowFunctions: true
+      });
+      expect(original.f).to.be(copy.f);
     });
   });
 });

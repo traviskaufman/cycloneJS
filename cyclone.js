@@ -12,25 +12,39 @@
   'use strict';
 
   var __call__ = Function.prototype.call;
-  var _hasProp = _bind(__call__, {}.hasOwnProperty);
+  var _hasOwn = _bind(__call__, {}.hasOwnProperty);
   var _toString = _bind(__call__, {}.toString);
+  var _slice = _bind(__call__, [].slice);
 
   // Many environments seem to not support ES5's native bind as of now.
   // Because of this, we'll use our own implementation.
   function _bind(fn, ctx) {
-    var slice = [].slice;
+    // Get a locally-scoped version of _slice here.
+    var _slice = [].slice;
     // Like native bind, an arbitrary amount of arguments can be passed into
     // this function which will automatically be bound to it whenever it's
     // called.
-    var boundArgs = slice.call(arguments, 2);
+    var boundArgs = _slice.call(arguments, 2);
 
     return function() {
-      return fn.apply(ctx, boundArgs.concat(slice.call(arguments)));
+      return fn.apply(ctx, boundArgs.concat(_slice.call(arguments)));
     };
   }
 
   function _isFunc(obj) {
     return (typeof obj === 'function');
+  }
+
+  // Quick and dirty shallow-copy functionality for options hash
+  function _mergeParams(src/*, target1, ..., targetN*/) {
+    return _slice(arguments, 1).reduce(function(target, mixin) {
+      for (var key in mixin) {
+        if (_hasOwn(mixin, key) && !_hasOwn(target, key)) {
+          target[key] = mixin[key];
+        }
+      }
+      return target;
+    }, src);
   }
 
   // We shim ES6's Map here if it's not in the environment already. Although
@@ -83,22 +97,23 @@
     };
   }
 
-  // Regex used to test whether or not an object could be an HTML Element.
-  var _htmlElementRE = /^\[object\sHTML(.*?)Element\]$/;
-
   // Any custom cloning procedures defined by the client will be stored here.
   var _customCloneProcedures = [];
 
   // Performs the "internal structured clone" portion of the structured cloning
   // algorithm. `input` is any valid object, and `mMap` is a(n empty)
-  // Map instance.
-  function _iSClone(input, mMap) {
+  // Map instance. `options` is the same as it is for `clone`
+  function _iSClone(input, mMap, options) {
+    options = _mergeParams(((typeof options === 'object') ? options : {}), {
+      allowFunctions: false
+    });
+
     if (input === null) {
       return null;
     }
 
-    if (typeof input === 'object') {
-      return _handleObjectClone(input, mMap);
+    if (Object(input) === input) {
+      return _handleObjectClone(input, mMap, options);
     }
 
     return input;
@@ -107,7 +122,7 @@
   // Here lies the meat and potatoes of the algorithm. `_handleObjectClone`
   // is responsible for creating deep copies of complex objects. Its parameters
   // are the same as for `_isClone`.
-  function _handleObjectClone(input, mMap) {
+  function _handleObjectClone(input, mMap, options) {
     // First we make sure that we aren't dealing with a circular reference.
     var _selfRef = mMap.get(input);
     if (_selfRef !== null) {
@@ -175,24 +190,23 @@
         break;
 
       default:
-        // If it's an HTML Element, try to clone it.
-        if (_htmlElementRE.test(obType) &&
-            _isFunc(input.cloneNode)) {
-
-          output = input.cloneNode();
+        // If `options.allowFunctions` is set to true, we allow functions to
+        // be passed directly into the copied object.
+        if (_isFunc(input) && (options.allowFunctions === true)) {
+          output = input;
         } else {
-          // Otherwise just throw an error.
           throw new TypeError(
             "Don't know how to clone object of type " + obType
           );
         }
+        break;
     }
 
     // Map this specific object to its output in case its cyclically referenced
     mMap.set(input, output);
 
     if (isCollection) {
-      _handleCollectionClone(input, output, mMap);
+      _handleCollectionClone(input, output, mMap, options);
     }
 
     return output;
@@ -217,7 +231,7 @@
   }
 
   // Handles the recursive portion of structured cloning.
-  function _handleCollectionClone(input, output, mMap) {
+  function _handleCollectionClone(input, output, mMap, options) {
     var prop;
 
     for (prop in input) {
@@ -227,8 +241,8 @@
       // spec explicitly states that this algorithm does *not* walk the
       // prototype chain, and therefore all Object prototypes are live
       // (assigned as a reference).
-      if (_hasProp(input, prop)) {
-        output[prop] = _iSClone(input[prop], mMap);
+      if (_hasOwn(input, prop)) {
+        output[prop] = _iSClone(input[prop], mMap, options);
       }
     }
   }
@@ -253,8 +267,8 @@
   // This is the module that we expose to the rest of the world.
   // CY.clone...get it? :)
   var CY = {
-    clone: function(input) {
-      return _iSClone(input, new Map());
+    clone: function(input, options) {
+      return _iSClone(input, new Map(), options);
     },
 
     // Returns true if the procedure is successfullly defined, false otherwise.
