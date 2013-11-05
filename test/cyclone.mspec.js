@@ -26,6 +26,7 @@ describe('cycloneJS', function() {
   }
 
   beforeEach(function() {
+    var val = 0;
     /*jshint -W053 */
     original = {
       number: Math.random(),
@@ -45,6 +46,20 @@ describe('cycloneJS', function() {
         }
       }
     };
+
+    Object.defineProperty(original, 'nonEnumerable', {
+      value: 'sup',
+      enumerable: false,
+      writable: true,
+      configurable: true
+    });
+
+    Object.defineProperty(original, 'accessor', {
+      get: function() { return val; },
+      set: function(v) { val = v; },
+      configurable: true,
+      enumerable: true
+    });
   });
 
   describe('basic cloning functionality', function() {
@@ -157,6 +172,20 @@ describe('cycloneJS', function() {
     it('clones nested cyclic references', function() {
       expect(original.nestedSelf.ref).not.to.be(clone.nestedSelf.ref);
       expect(clone.nestedSelf.ref).to.be(clone);
+    });
+  });
+
+  describe('ES5 Considerations', function() {
+    it('clones non-enumerable properties', function() {
+      expect(clone.nonEnumerable).to.be(original.nonEnumerable);
+    });
+
+    it('preserves descriptor values on copied properties', function() {
+      expect(Object.getOwnPropertyDescriptor(clone, 'nonEnumerable').enumerable).to.be(false);
+    });
+
+    it('can handle accessor properties', function() {
+      expect(clone.accessor).to.be(0);    
     });
   });
 

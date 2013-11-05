@@ -232,19 +232,22 @@
 
   // Handles the recursive portion of structured cloning.
   function _handleCollectionClone(input, output, mMap, options) {
-    var prop;
-
-    for (prop in input) {
-      // Note that we use the hasOwnProperty guard here since we've already
-      // used `Object.create()` to create the duplicate, so we have
-      // already acquired the original object's prototype. Note that the W3C
-      // spec explicitly states that this algorithm does *not* walk the
-      // prototype chain, and therefore all Object prototypes are live
-      // (assigned as a reference).
-      if (_hasOwn(input, prop)) {
-        output[prop] = _iSClone(input[prop], mMap, options);
+    // Note that we use own property names here since we've already
+    // used `Object.create()` to create the duplicate, so we have
+    // already acquired the original object's prototype. Note that the W3C
+    // spec explicitly states that this algorithm does *not* walk the
+    // prototype chain, and therefore all Object prototypes are live
+    // (assigned as a reference).
+    Object.getOwnPropertyNames(input).forEach(function(prop) {
+      var desc = Object.getOwnPropertyDescriptor(input, prop);
+      // We only clone if the property is a non-accessor. We can't really clone
+      // getters and setters, we can only pass them through.
+      if (desc.value !== undefined) {
+        desc.value = _iSClone(desc.value, mMap, options);
       }
-    }
+
+      Object.defineProperty(output, prop, desc);
+    });
   }
 
   function _attemptCustomClone(obj) {
