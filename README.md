@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/traviskaufman/cycloneJS.png)](https://travis-ci.org/traviskaufman/cycloneJS)
-[![browser support](https://ci.testling.com/traviskaufman/cycloneJS.png)](https://ci.testling.com/traviskaufman/cycloneJS)
 
 Cyclone is an attempt to implement an adaptation of the HTML5 [Structured
 Cloning
@@ -16,7 +15,6 @@ It is meant to be:
 * Able to copy functions (including function objects) by reference.
   <strong>This is the only property that's copied by reference.</strong>
   See above about serving the *majority* of use cases.
-* Able to copy DOM objects via `cloneNode`
 
 It can handle objects containing:
 
@@ -33,6 +31,8 @@ It can handle objects containing:
 * In most cases, Objects instantiated with the use of a custom constructor (e.g. `function Foo() { this.bar = 'baz' }; var cloneable = new Foo();`)
 * Cyclic references to itself, including nested cyclic references
 * Cyclic references to objects within itself, including nested cyclic references to those objects
+* Non-enumerable properties, or properties with custom descriptors
+* Accessor properties
 
 ## Usage
 This module exposes a single object, `CY`, into the global scope when used within browsers. A client can then use
@@ -63,6 +63,9 @@ var CY = require('cyclonejs');
 // Do some CY.clone()-ing
 ```
 
+Check out the tests for more ways in which CY can be used!
+_TODO: Document Options Object and custom cloning procedures_
+
 ## Contributing/Testing
 First install the module
 ```sh
@@ -74,6 +77,7 @@ Then just run `npm test` within the module's directory whenever you want to test
 files as well as run tests against cyclone.
 
 ## Coming Soon
-* Ability to define your own protocols for copying unsupported and/or custom
-  objects.
+* More/better documentation
+* v1.0 Release!
+* Ability to supress errors thrown by non-copyable objects
 * Features other people contribute.
