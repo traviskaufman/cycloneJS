@@ -148,7 +148,8 @@ describe('cycloneJS', function() {
         expect(original.object.nested.array).to.eql(clone.object.nested.array);
       });
 
-      it("throws an error if it doesn't know how to clone an object", function() {
+      it("throws an error if it doesn't know how to clone an object",
+         function() {
         original.f = function() {};
         expect(function() {
           CY.clone(original);
@@ -181,11 +182,13 @@ describe('cycloneJS', function() {
     });
 
     it('preserves descriptor values on copied properties', function() {
-      expect(Object.getOwnPropertyDescriptor(clone, 'nonEnumerable').enumerable).to.be(false);
+      expect(
+        Object.getOwnPropertyDescriptor(clone, 'nonEnumerable').enumerable
+      ).to.be(false);
     });
 
     it('can handle accessor properties', function() {
-      expect(clone.accessor).to.be(0);    
+      expect(clone.accessor).to.be(0);
     });
   });
 
@@ -292,7 +295,8 @@ describe('cycloneJS', function() {
   });
 
   describe('options for CY.clone', function() {
-    it('has an `allowFunctions` option that will pass functions through', function() {
+    it('has an `allowFunctions` option that will pass functions ' +
+       'through', function() {
       var copy;
       original.f = function() {};
       copy = CY.clone(original, {
@@ -300,5 +304,21 @@ describe('cycloneJS', function() {
       });
       expect(original.f).to.be(copy.f);
     });
+
+    it('has a `suppressErrors` option that will return null on bad clone ' +
+       'instead of throwing an error', function() {
+      original.f = function() {};
+      expect(function() {
+        CY.clone(original, {
+          suppressErrors: true
+        });
+      }).to.not.throwException();
+    });
+
+    it('returns null if `suppressErrors` is true', function() {
+      original.f = function() {};
+      expect(CY.clone(original, {suppressErrors: true})).to.be(null);
+    });
   });
+
 });

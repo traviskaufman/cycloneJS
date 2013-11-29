@@ -1,7 +1,7 @@
 /**
  * Cyclone.js: An Adaptation of the HTML5 structured cloning alogrithm.
  * @author Travis Kaufman <travis.kaufman@gmail.com>
- * @license MIT
+ * @license MIT.
  */
 
 // This module can recursively clone objects, including those containing
@@ -104,9 +104,6 @@
   // algorithm. `input` is any valid object, and `mMap` is a(n empty)
   // Map instance. `options` is the same as it is for `clone`
   function _iSClone(input, mMap, options) {
-    options = _mergeParams(((typeof options === 'object') ? options : {}), {
-      allowFunctions: false
-    });
 
     if (input === null) {
       return null;
@@ -116,6 +113,7 @@
       return _handleObjectClone(input, mMap, options);
     }
 
+    // If the value is a primitive, simply return it.
     return input;
   }
 
@@ -271,7 +269,32 @@
   // CY.clone...get it? :)
   var CY = {
     clone: function(input, options) {
-      return _iSClone(input, new Map(), options);
+      var result, map = new Map();
+      options = _mergeParams(((typeof options === 'object') ? options : {}), {
+        // If set to true, this will simply pass a function through to the
+        // copied object instead of throwing.
+        allowFunctions: false,
+        // If set to true, this will stop CY.clone() from throwing *any* errors
+        // at all if it can't clone the object. Instead, it will simply return
+        // `null`. This is useful if you don't want a bad clone to halt program
+        // execution.
+        suppressErrors: false
+      });
+
+      // Don't enter try/catch unless suppressErrors is given.
+      // We want to try to avoid context switches if we can to get the most
+      // performance possible out of this function.
+      if (options.suppressErrors === true) {
+        try {
+          result = _iSClone(input, map, options);
+        } catch (err) {
+          result = null;
+        } finally {
+          return result;
+        }
+      }
+
+      return _iSClone(input, map, options);
     },
 
     // Returns true if the procedure is successfullly defined, false otherwise.
