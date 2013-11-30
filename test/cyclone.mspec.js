@@ -315,7 +315,7 @@ describe('cycloneJS', function() {
       }).to.not.throwException();
     });
 
-    it('returns null if `suppressErrors` is true', function() {
+    it('returns null if `suppressErrors` is true and an error is thrown', function() {
       original.f = function() {};
       expect(CY.clone(original, {suppressErrors: true})).to.be(null);
     });
