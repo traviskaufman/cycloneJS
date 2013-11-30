@@ -63,8 +63,73 @@ var CY = require('cyclonejs');
 // Do some CY.clone()-ing
 ```
 
-Check out the tests for more ways in which CY can be used!
-_TODO: Document Options Object and custom cloning procedures_
+### Cloning options
+`CY.clone` takes an options hash as a second argument, which accepts the following parameters:
+* `allowFunctions`: (default: `false`) If set to true, `CY.clone` will simply pass functions through to the copied object, instead of throwing an error saying it can't clone a function.
+```javascript
+var fnObject = {
+  f: function() {}
+};
+var copy = CY.clone(fnObject, {
+  allowFunctions: true
+});
+console.log(copy.f === fnObject.f) // true
+```
+* `suppressErrors`: (default: `false`) If set to true, `CY.clone` will return `null` instead of throwing an Error if it comes across an object it doesn't know how to clone. If you need `CY.clone` to be extremely forgiving, this is the option for you.
+```javascript
+var mixedBag = {
+  htmlElement: document.createElement('div'),
+  ctx: document.getElementsByTagName('canvas')[0].getContext('2d')
+};
+var result = CY.clone(mixedBag, {
+  suppressErrors: true
+});
+console.log(result); // null
+```
+
+### Extending `CY.clone()`'s functionality with `defineCloneProcedure`
+
+Because cyclone is built to be environment-agnostic, it is incapable of handling certain cloneable host objects, such as DOM elements, out-of-the-box. However, that doesn't mean that these objects themselves aren't cloneable! For example, most DOM elements can be cloned using `cloneNode()`. Cyclone comes with a method called `defineCloneProcedure` that allows you to add in your own cloning methods for host objects, or other objects, that can't be handled in a standard way by `CY.clone`. Here's how you can add support for cloning DOM nodes using `CY.clone`:
+```javascript
+var elementTagRE = /^HTML\w*Element$/;
+CY.defineCloneProcedure({
+  detect: function(obj) {
+    var klass = Object.prototype.toString.call(obj).slice(8, -1);
+    return elementTagRE.test(klass) && typeof obj.cloneNode === 'function';
+  },
+  copy: function(el) {
+    return el.cloneNode()
+  }
+});
+
+var orig = document.createElement('div');
+var clone = CY.clone(orig);
+console.log(clone !== orig); // True
+```
+
+Here's another example of how to handle most jQuery objects:
+```javascript
+CY.defineCloneProcedure({
+  detect: function(obj) {
+    return 'jquery' in obj;
+  },
+  copy: function($el) {
+    return $el.clone();
+  }
+});
+
+CY.clone($('#main')); // Returns a cloned jQuery object.
+```
+
+`defineCloneProcedure` takes an object that _must_ contain two properties `detect` and `copy`.
+
+`detect` should be a function that takes an object and returns `true` if and only if `obj` is of the type that you want to define your custom cloning procedure for. In the above example, `detect` ensures that the `[[Class]]` of `obj` is specified as some kind of HTML Element, and that it has a function called `cloneNode`.
+
+`copy` should be a function that takes an object and returns a copy of that object. You are responsible for providing the procedure used to copy the object. In the case of an HTML Element, we simply call its `cloneNode` method.
+
+`defineCloneProcedure` will return `true` if the cloning procedure is successfully defined, and `false` otherwise. Note that `defineCloneProcedure` gives priority to procedures that were defined most recently. That means if you define two cloning procedures whose `detect` functions both return true for a given type of object, the latter's `copy` function will be used.
+
+You can erase all custom cloning procedures defined by calling `CY.clearCustomCloneProcedures()`.
 
 ## Contributing/Testing
 First install the module
@@ -76,8 +141,4 @@ $ npm install .
 Then just run `npm test` within the module's directory whenever you want to test. This will run jshint on all javascript
 files as well as run tests against cyclone.
 
-## Coming Soon
-* More/better documentation
-* v1.0 Release!
-* Ability to supress errors thrown by non-copyable objects
-* Features other people contribute.
+Issues and Pull Requests are widely encouraged!!
