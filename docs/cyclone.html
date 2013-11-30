@@ -33,7 +33,7 @@
             <div class="content"><div class='highlight'><pre><span class="comment">/**
  * Cyclone.js: An Adaptation of the HTML5 structured cloning alogrithm.
  * @author Travis Kaufman &lt;travis.kaufman@gmail.com&gt;
- * @license MIT
+ * @license MIT.
  */</span></pre></div></div>
             
         </li>
@@ -284,9 +284,6 @@ Map instance. <code>options</code> is the same as it is for <code>clone</code></
             </div>
             
             <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">function</span> <span class="title">_iSClone</span><span class="params">(input, mMap, options)</span> {</span>
-    options = _mergeParams(((<span class="keyword">typeof</span> options === <span class="string">'object'</span>) ? options : {}), {
-      allowFunctions: <span class="literal">false</span>
-    });
 
     <span class="keyword">if</span> (input === <span class="literal">null</span>) {
       <span class="keyword">return</span> <span class="literal">null</span>;
@@ -294,10 +291,7 @@ Map instance. <code>options</code> is the same as it is for <code>clone</code></
 
     <span class="keyword">if</span> (Object(input) === input) {
       <span class="keyword">return</span> _handleObjectClone(input, mMap, options);
-    }
-
-    <span class="keyword">return</span> input;
-  }</pre></div></div>
+    }</pre></div></div>
             
         </li>
         
@@ -307,6 +301,22 @@ Map instance. <code>options</code> is the same as it is for <code>clone</code></
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>If the value is a primitive, simply return it.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="keyword">return</span> input;
+  }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p>Here lies the meat and potatoes of the algorithm. <code>_handleObjectClone</code>
 is responsible for creating deep copies of complex objects. Its parameters
@@ -319,11 +329,11 @@ are the same as for <code>_isClone</code>.</p>
         </li>
         
         
-        <li id="section-15">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
               <p>First we make sure that we aren&#39;t dealing with a circular reference.</p>
 
@@ -337,11 +347,11 @@ are the same as for <code>_isClone</code>.</p>
         </li>
         
         
-        <li id="section-16">
+        <li id="section-17">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
               <p>We also check up front to make sure that a client-defined custom
 procedure has not been registered for this type of object. If it has,
@@ -357,11 +367,11 @@ it takes priority over any of the implementations below.</p>
         </li>
         
         
-        <li id="section-17">
+        <li id="section-18">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p>Most supported object types can be copied simply by creating a new
 instance of the object using its current value, so we save that in this
@@ -376,11 +386,11 @@ variable.</p>
         </li>
         
         
-        <li id="section-18">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <p>We define a collection as either an array of Objects other than String,
 Number, Boolean, Date, or RegExp objects. Basically it&#39;s any structure
@@ -395,11 +405,11 @@ where recursive cloning may be necessary.</p>
         </li>
         
         
-        <li id="section-19">
+        <li id="section-20">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-19">&#182;</a>
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <p>These cases follow the W3C&#39;s specification for how certain objects
 are handled. Note that jshint will complain about using Object
@@ -439,11 +449,11 @@ case should the client pass one in.</p>
         </li>
         
         
-        <li id="section-20">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <p>Although the spec says to simply create an empty object when
 encountered with this scenario, we set up the proper prototype chain
@@ -461,11 +471,11 @@ from Object.prototype.</p>
         </li>
         
         
-        <li id="section-21">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <p>If <code>options.allowFunctions</code> is set to true, we allow functions to
 be passed directly into the copied object.</p>
@@ -485,11 +495,11 @@ be passed directly into the copied object.</p>
         </li>
         
         
-        <li id="section-22">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <p>Map this specific object to its output in case its cyclically referenced</p>
 
@@ -507,11 +517,11 @@ be passed directly into the copied object.</p>
         </li>
         
         
-        <li id="section-23">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <p>Handles the safe cloning of RegExp objects, where we explicitly pass the
 regex object, the source, and flags separately, as this prevents bugs
@@ -537,11 +547,11 @@ within phantomJS (and possibly other environments as well).</p>
         </li>
         
         
-        <li id="section-24">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <p>Handles the recursive portion of structured cloning.</p>
 
@@ -552,11 +562,11 @@ within phantomJS (and possibly other environments as well).</p>
         </li>
         
         
-        <li id="section-25">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <p>Note that we use own property names here since we&#39;ve already
 used <code>Object.create()</code> to create the duplicate, so we have
@@ -573,11 +583,11 @@ prototype chain, and therefore all Object prototypes are live
         </li>
         
         
-        <li id="section-26">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <p>We only clone if the property is a non-accessor. We can&#39;t really clone
 getters and setters, we can only pass them through.</p>
@@ -600,11 +610,11 @@ getters and setters, we can only pass them through.</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <p>Note that if two procedures passed in detect the same type of object,
 the latest procedure will take priority.</p>
@@ -625,11 +635,11 @@ the latest procedure will take priority.</p>
         </li>
         
         
-        <li id="section-28">
+        <li id="section-29">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p>This is the module that we expose to the rest of the world.
 CY.clone...get it? :)</p>
@@ -638,17 +648,80 @@ CY.clone...get it? :)</p>
             
             <div class="content"><div class='highlight'><pre>  <span class="keyword">var</span> CY = {
     clone: <span class="function"><span class="keyword">function</span><span class="params">(input, options)</span> {</span>
-      <span class="keyword">return</span> _iSClone(input, <span class="keyword">new</span> Map(), options);
+      <span class="keyword">var</span> result, map = <span class="keyword">new</span> Map();
+      options = _mergeParams(((<span class="keyword">typeof</span> options === <span class="string">'object'</span>) ? options : {}), {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
+              <p>If set to true, this will simply pass a function through to the
+copied object instead of throwing.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        allowFunctions: <span class="literal">false</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-31">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-31">&#182;</a>
+              </div>
+              <p>If set to true, this will stop CY.clone() from throwing <em>any</em> errors
+at all if it can&#39;t clone the object. Instead, it will simply return
+<code>null</code>. This is useful if you don&#39;t want a bad clone to halt program
+execution.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        suppressErrors: <span class="literal">false</span>
+      });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-32">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-32">&#182;</a>
+              </div>
+              <p>Don&#39;t enter try/catch unless suppressErrors is given.
+We want to try to avoid context switches if we can to get the most
+performance possible out of this function.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      <span class="keyword">if</span> (options.suppressErrors === <span class="literal">true</span>) {
+        <span class="keyword">try</span> {
+          result = _iSClone(input, map, options);
+        } <span class="keyword">catch</span> (err) {
+          result = <span class="literal">null</span>;
+        } <span class="keyword">finally</span> {
+          <span class="keyword">return</span> result;
+        }
+      }
+
+      <span class="keyword">return</span> _iSClone(input, map, options);
     },</pre></div></div>
             
         </li>
         
         
-        <li id="section-29">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <p>Returns true if the procedure is successfullly defined, false otherwise.</p>
 
@@ -659,11 +732,11 @@ CY.clone...get it? :)</p>
         </li>
         
         
-        <li id="section-30">
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <p>Make sure we can use this procedure</p>
 
@@ -688,11 +761,11 @@ CY.clone...get it? :)</p>
         </li>
         
         
-        <li id="section-31">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <p>Finally we take care of exporting business.</p>
 
@@ -703,11 +776,11 @@ CY.clone...get it? :)</p>
         </li>
         
         
-        <li id="section-32">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-32">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <p>Node</p>
 
@@ -719,11 +792,11 @@ CY.clone...get it? :)</p>
         </li>
         
         
-        <li id="section-33">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p>AMD/RequireJS</p>
 
@@ -735,11 +808,11 @@ CY.clone...get it? :)</p>
         </li>
         
         
-        <li id="section-34">
+        <li id="section-38">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <p>Browser or some other environment. Simply attach the module to the root
 object.</p>
