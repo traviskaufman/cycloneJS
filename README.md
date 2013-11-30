@@ -90,6 +90,7 @@ console.log(result); // null
 ### Extending `CY.clone()`'s functionality with `defineCloneProcedure`
 
 Because cyclone is built to be environment-agnostic, it is incapable of handling certain cloneable host objects, such as DOM elements, out-of-the-box. However, that doesn't mean that these objects themselves aren't cloneable! For example, most DOM elements can be cloned using `cloneNode()`. Cyclone comes with a method called `defineCloneProcedure` that allows you to add in your own cloning methods for host objects, or other objects, that can't be handled in a standard way by `CY.clone`. Here's how you can add support for cloning DOM nodes using `CY.clone`:
+
 ```javascript
 var elementTagRE = /^HTML\w*Element$/;
 CY.defineCloneProcedure({
@@ -108,6 +109,7 @@ console.log(clone !== orig); // True
 ```
 
 Here's another example of how to handle most jQuery objects:
+
 ```javascript
 CY.defineCloneProcedure({
   detect: function(obj) {
