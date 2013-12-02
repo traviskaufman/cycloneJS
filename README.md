@@ -66,6 +66,7 @@ var CY = require('cyclonejs');
 ### Cloning options
 `CY.clone` takes an options hash as a second argument, which accepts the following parameters:
 * `allowFunctions`: (default: `false`) If set to true, `CY.clone` will simply pass functions through to the copied object, instead of throwing an error saying it can't clone a function.
+
 ```javascript
 var fnObject = {
   f: function() {}
@@ -76,6 +77,7 @@ var copy = CY.clone(fnObject, {
 console.log(copy.f === fnObject.f) // true
 ```
 * `suppressErrors`: (default: `false`) If set to true, `CY.clone` will return `null` instead of throwing an Error if it comes across an object it doesn't know how to clone. If you need `CY.clone` to be extremely forgiving, this is the option for you.
+
 ```javascript
 var mixedBag = {
   htmlElement: document.createElement('div'),
