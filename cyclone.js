@@ -321,7 +321,7 @@
   if (typeof module === 'object' && typeof module.exports === 'object') {
     // Node
     module.exports = CY;
-  } else if (_isFunc(define) && _isFunc(require)) {
+  } else if (typeof define === "function" && define.amd) {
     // AMD/RequireJS
     define([], function() { return CY; });
   } else {
