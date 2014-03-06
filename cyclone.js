@@ -238,13 +238,23 @@
     // (assigned as a reference).
     Object.getOwnPropertyNames(input).forEach(function(prop) {
       var desc = Object.getOwnPropertyDescriptor(input, prop);
-      // We only clone if the property is a non-accessor. We can't really clone
-      // getters and setters, we can only pass them through.
-      if (desc.value !== undefined) {
-        desc.value = _iSClone(desc.value, mMap, options);
+      var isNonAccessor = _hasOwn(desc, 'value');
+      var inputVal = isNonAccessor ? desc.value : desc.get();
+      var outputVal = _iSClone(inputVal, mMap, options);
+      // If `options.preserveDescriptors` is true, only then do we preserve
+      // descriptors. Otherwise we simply assign the property. This is in an
+      // effort to adhere to the spec, since this behaviour errs more towards
+      // what developers expect.
+      if (options.preserveDescriptors === true) {
+        // We only clone if the property is a non-accessor. We can't really clone
+        // getters and setters, we can only pass them through.
+        if (desc.value !== undefined) {
+          desc.value = outputVal;
+        }
+        Object.defineProperty(output, prop, desc);
+      } else {
+        output[prop] = outputVal;
       }
-
-      Object.defineProperty(output, prop, desc);
     });
   }
 
