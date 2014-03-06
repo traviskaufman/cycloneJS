@@ -105,7 +105,7 @@ var APlus = CY.clone(Array.prototype, {
 
 var enum = Object.create(APlus);
 enum.push(1, 2, 3, 4, 5);
-console.log(Object.keys(enum)); // ['0', '1', '2', '3', '4', 'length']
+console.log(Object.keys(enum)); // ['0', '1', '2', '3', '4']
 ```
 
 ### Extending `CY.clone()`'s functionality with `defineCloneProcedure`
