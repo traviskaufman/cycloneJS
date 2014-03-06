@@ -5,7 +5,7 @@ var CY = require('../cyclone.js');
 var expect = require('expect.js');
 
 describe('cycloneJS', function() {
-  var original;
+  var original, val;
 
   // http://stackoverflow.com/questions/10776600/
   // testing-for-equality-of-regular-expressions
@@ -26,7 +26,7 @@ describe('cycloneJS', function() {
   }
 
   beforeEach(function() {
-    var val = 0;
+    val = 0;
     /*jshint -W053 */
     original = {
       number: Math.random(),
@@ -181,14 +181,21 @@ describe('cycloneJS', function() {
       expect(clone.nonEnumerable).to.be(original.nonEnumerable);
     });
 
-    it('preserves descriptor values on copied properties', function() {
+    it('does *not* preserve descriptor values on copied properties ' +
+       '(GH#11)', function() {
       expect(
         Object.getOwnPropertyDescriptor(clone, 'nonEnumerable').enumerable
-      ).to.be(false);
+      ).to.be(true);
     });
 
     it('can handle accessor properties', function() {
       expect(clone.accessor).to.be(0);
+    });
+
+    it('only assigns the value returned from the accessor by default ' +
+       '(GH#11)', function() {
+      clone.accessor = 10;
+      expect(val).to.be(0);
     });
   });
 
@@ -295,6 +302,22 @@ describe('cycloneJS', function() {
   });
 
   describe('options for CY.clone', function() {
+
+    it ('has a `preserveDescriptors` option that will copy property ' +
+        'descriptors when set to true', function() {
+      clone = CY.clone(original, { preserveDescriptors: true });
+      expect(
+        Object.getOwnPropertyDescriptor(clone, 'nonEnumerable').enumerable
+      ).to.be(false);
+    });
+
+    it ('passes get/set accessor methods through when `preserveDescriptors` ' +
+        'is set to true', function() {
+      clone = CY.clone(original, { preserveDescriptors: true });
+      clone.accessor = 10;
+      expect(val).to.be(10);
+    });
+
     it('has an `allowFunctions` option that will pass functions ' +
        'through', function() {
       var copy;

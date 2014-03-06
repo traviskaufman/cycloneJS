@@ -32,7 +32,8 @@ It can handle objects containing:
 * Cyclic references to itself, including nested cyclic references
 * Cyclic references to objects within itself, including nested cyclic references to those objects
 * Non-enumerable properties, or properties with custom descriptors
-* Accessor properties
+  (disabled by default: see options)
+* Accessor properties (disabled by default: see options)
 
 ## Usage
 This module exposes a single object, `CY`, into the global scope when used within browsers. A client can then use
@@ -87,6 +88,24 @@ var result = CY.clone(mixedBag, {
   suppressErrors: true
 });
 console.log(result); // null
+```
+
+* `preserveDescriptors`: (default: `false`) In order to be more predictable out-of-the-box with how the Structured Cloning Algorithm
+  normally behaves, this module by default does *not* preserve property descriptors/accessor methods when cloning. However, this functionality
+  can be useful when one is concerned with preserving every single aspect of the original object. If this is the case, set this property to
+  `true` and CY.clone() will copy the property to the new object with the descriptors intact. _NOTE_: Accessor methods will be simply passed through, *not* truly
+  copied, so mutating a property on the copied object will cause the same side effects as performing the same operation on the original. If you're concerned about
+  high-integrity code, this option is for you.
+
+```javascript
+var APlus = CY.clone(Array.prototype, {
+  preserveDescriptors: true,
+  allowFunctions: true
+});
+
+var enum = Object.create(APlus);
+enum.push(1, 2, 3, 4, 5);
+console.log(Object.keys(enum)); // ['0', '1', '2', '3', '4', 'length']
 ```
 
 ### Extending `CY.clone()`'s functionality with `defineCloneProcedure`
