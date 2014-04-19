@@ -5,7 +5,8 @@
   "main": "cyclone.js",
   "scripts": {
     "pretest": "./node_modules/.bin/jshint *.js test/*.js",
-    "test": "./node_modules/.bin/mocha --reporter spec test/*.mspec.js"
+    "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --format html -- --require test/init --reporter spec test/*.mspec.js",
+    "posttest": "./node_modules/.bin/istanbul check-coverage --statements 100 --branches 100 --functions 100 --lines 100"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,8 @@
     "mocha": "~1.12.0",
     "expect.js": "~0.2.0",
     "jshint": "~2.5.0",
-    "docco": "~0.6.2"
+    "docco": "~0.6.2",
+    "istanbul": "~0.2.7"
   },
   "testling": {
     "harness": "mocha",

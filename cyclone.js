@@ -51,6 +51,8 @@
   // it would be better to use WeakMaps here, this is impossible to do with ES5
   // since references to objects won't be garbage collected if they're still
   // in the map, so it's better to keep the implementation consistent.
+  // We can ignore coverage of the following ternary statement.
+  /* istanbul ignore next */
   var Map = _isFunc(root.Map) ? root.Map : function Map() {
     Object.defineProperties(this, {
       inputs: {
@@ -67,21 +69,23 @@
   // All we need are the `get` and `set` public-facing methods so we shim just
   // them.
 
+  // Ignoring this and the subsequent if statement since we don't need to cover
+  // shim conditionals.
+  /* istanbul ignore next */
   if (!_isFunc(Map.prototype.set)) {
     // Map a given `input` object to a given `output` object. Relatively
     // straightforward.
     Map.prototype.set = function(input, output) {
-      var inputIdx = this.inputs.indexOf(input);
-      if (inputIdx === -1) {
-        this.inputs.push(input);
-        this.outputs.push(output);
-      } else {
-        // Associate this input with the new output.
-        this.outputs[inputIdx] = output;
-      }
+      // Note that here for our purposes we *never* have to assert that
+      // we're re-assigning since clones will always map 1:1 and never be
+      // overridden by another clone in one go. Therefore that conditional logic
+      // is omitted.
+      this.inputs.push(input);
+      this.outputs.push(output);
     };
   }
 
+  /* istanbul ignore next */
   if (!_isFunc(Map.prototype.get)) {
     // Retrieve the object that's mapped to `input`, or null if input is not
     // found within the transfer map.
@@ -326,8 +330,8 @@
     }
   };
 
-  // Finally we take care of exporting business.
-
+  // Finally we take care of exporting business. We can ignore coverage of this.
+  /* istanbul ignore next */
   if (typeof module === 'object' && typeof module.exports === 'object') {
     // Node
     module.exports = CY;

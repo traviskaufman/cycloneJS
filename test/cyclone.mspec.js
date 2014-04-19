@@ -4,7 +4,7 @@
  * CycloneJS Unit Tests.
  */
 var CY = require('../cyclone.js');
-var expect = require('expect.js');
+var expect = global.expect;
 
 describe('cycloneJS', function() {
   var original, val, clone;
@@ -38,7 +38,8 @@ describe('cycloneJS', function() {
       numberObj: new Number(1),
       boolObj: new Boolean(true),
       stringObj: new String('hey'),
-      regex: /^someRE$/g,
+      regex: /^someRE$/gim,
+      regexNoFlags: /lookMaNoFlags/,
       array: [1, 2, {buckleMy: 'shoe'}],
       object: {
         foo: 1,
@@ -101,6 +102,13 @@ describe('cycloneJS', function() {
       it('clones regex objects', function() {
         expect(original.regex).not.to.be(clone.regex);
         expect(_isRegexEqual(original.regex, clone.regex)).to.be(true);
+      });
+
+      it('clones regex objects with no flags', function() {
+        expect(original.regexNoFlags).not.to.be(clone.regexNoFlags);
+        expect(
+          _isRegexEqual(original.regexNoFlags, clone.regexNoFlags)
+        ).to.be(true);
       });
 
       it('clones boolean objects', function() {
@@ -269,6 +277,16 @@ describe('cycloneJS', function() {
 
     it('will fail if an object isn\'t passed in', function() {
       expect(CY.defineCloneProcedure('herp')).to.be(false);
+    });
+
+    it('will only copy the procedure if detect() returns true', function() {
+      var copy;
+      CY.defineCloneProcedure({
+        detect: function(obj) { return obj === true; },
+        copy: function() { return 'not this'; }
+      });
+      copy = CY.clone({ foo: true });
+      expect(copy.foo).to.be(true);
     });
 
     it('will fail if the object lacks a `detect` function', function() {
