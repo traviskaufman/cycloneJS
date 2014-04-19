@@ -153,15 +153,3 @@ CY.clone($('#main')); // Returns a cloned jQuery object.
 `defineCloneProcedure` will return `true` if the cloning procedure is successfully defined, and `false` otherwise. Note that `defineCloneProcedure` gives priority to procedures that were defined most recently. That means if you define two cloning procedures whose `detect` functions both return true for a given type of object, the latter's `copy` function will be used.
 
 You can erase all custom cloning procedures defined by calling `CY.clearCustomCloneProcedures()`.
-
-## Contributing/Testing
-First install the module
-```sh
-$ git clone https://github.com/traviskaufman/cycloneJS.git
-$ cd /path/to/cycloneJS
-$ npm install .
-```
-Then just run `npm test` within the module's directory whenever you want to test. This will run jshint on all javascript
-files as well as run tests against cyclone.
-
-Issues and Pull Requests are widely encouraged!!
