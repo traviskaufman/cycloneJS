@@ -153,3 +153,26 @@ CY.clone($('#main')); // Returns a cloned jQuery object.
 `defineCloneProcedure` will return `true` if the cloning procedure is successfully defined, and `false` otherwise. Note that `defineCloneProcedure` gives priority to procedures that were defined most recently. That means if you define two cloning procedures whose `detect` functions both return true for a given type of object, the latter's `copy` function will be used.
 
 You can erase all custom cloning procedures defined by calling `CY.clearCustomCloneProcedures()`.
+
+## MIT License
+The MIT License (MIT)
+
+Copyright (c) 2014 Travis Kaufman
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
