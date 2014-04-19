@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * CycloneJS Unit Tests.
  */
@@ -5,7 +7,7 @@ var CY = require('../cyclone.js');
 var expect = require('expect.js');
 
 describe('cycloneJS', function() {
-  var original, val;
+  var original, val, clone;
 
   // http://stackoverflow.com/questions/10776600/
   // testing-for-equality-of-regular-expressions
@@ -63,7 +65,6 @@ describe('cycloneJS', function() {
   });
 
   describe('basic cloning functionality', function() {
-    var clone;
     beforeEach(function() {
       clone = CY.clone(original);
     });
@@ -148,7 +149,7 @@ describe('cycloneJS', function() {
         expect(original.object.nested.array).to.eql(clone.object.nested.array);
       });
 
-      it("throws an error if it doesn't know how to clone an object",
+      it('throws an error if it doesn\'t know how to clone an object',
          function() {
         original.f = function() {};
         expect(function() {
@@ -258,7 +259,7 @@ describe('cycloneJS', function() {
     it('returns true on successful definition', function() {
       expect(CY.defineCloneProcedure({
         detect: function(obj) { return obj === true; },
-        copy: function(obj) { return 'true'; }
+        copy: function() { return 'true'; }
       })).to.be(true);
     });
 
@@ -266,7 +267,7 @@ describe('cycloneJS', function() {
       expect(CY.defineCloneProcedure({})).to.be(false);
     });
 
-    it("will fail if an object isn't passed in", function() {
+    it('will fail if an object isn\'t passed in', function() {
       expect(CY.defineCloneProcedure('herp')).to.be(false);
     });
 
@@ -338,7 +339,8 @@ describe('cycloneJS', function() {
       }).to.not.throwException();
     });
 
-    it('returns null if `suppressErrors` is true and an error is thrown', function() {
+    it('returns null if `suppressErrors` is true and an error ' +
+       'is thrown', function() {
       original.f = function() {};
       expect(CY.clone(original, {suppressErrors: true})).to.be(null);
     });

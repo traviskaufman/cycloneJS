@@ -1,0 +1,25 @@
+{
+  "curly": true,
+  "immed": true,
+  "indent": 2,
+  "latedef": true,
+  "newcap": true,
+  "noarg": true,
+  "noempty": true,
+  "quotmark": true,
+  "undef": true,
+  "unused": true,
+  "strict": true,
+  "trailing": true,
+  "maxstatements": 40,
+  "maxcomplexity": 15,
+  "maxlen": 80,
+  "boss": true,
+  "eqnull": true,
+  "validthis": true,
+  "latedef": "nofunc",
+  "node": true,
+  "predef": [
+    "define"
+  ]
+}

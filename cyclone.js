@@ -194,7 +194,7 @@
           output = input;
         } else {
           throw new TypeError(
-            "Don't know how to clone object of type " + obType
+            'Don\'t know how to clone object of type ' + obType
           );
         }
         break;
@@ -246,8 +246,8 @@
       // effort to adhere to the spec, since this behaviour errs more towards
       // what developers expect.
       if (options.preserveDescriptors === true) {
-        // We only clone if the property is a non-accessor. We can't really clone
-        // getters and setters, we can only pass them through.
+        // We only clone if the property is a non-accessor. We can't really
+        // clone getters and setters, we can only pass them through.
         if (desc.value !== undefined) {
           desc.value = outputVal;
         }
@@ -331,7 +331,7 @@
   if (typeof module === 'object' && typeof module.exports === 'object') {
     // Node
     module.exports = CY;
-  } else if (typeof define === "function" && define.amd) {
+  } else if (typeof define === 'function' && define.amd) {
     // AMD/RequireJS
     define([], function() { return CY; });
   } else {
