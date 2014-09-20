@@ -2,7 +2,7 @@
   "name": "cycloneJS",
   "repo": "traviskaufman/cyclonejs",
   "description": "A pure-javascript adaptation of the W3C's structured cloning algorithm, designed to provide an easy interface for deep copying of complex objects",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "scripts": ["cyclone.js"],
   "main": "cyclone.js"
 }

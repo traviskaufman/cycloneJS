@@ -1,6 +1,6 @@
 {
   "name": "cyclonejs",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A pure-js adaptation of the W3C structured cloning algorithm, designed to provide an easy interface for deep copying of complex objects",
   "main": "cyclone.js",
   "repository": {
