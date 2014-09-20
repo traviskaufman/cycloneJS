@@ -82,6 +82,9 @@
       // is omitted.
       this.inputs.push(input);
       this.outputs.push(output);
+
+      // As per the specification, return the Map object
+      return this;
     };
   }
 
@@ -91,7 +94,7 @@
     // found within the transfer map.
     Map.prototype.get = function(input) {
       var idx = this.inputs.indexOf(input);
-      var output = null;
+      var output;
 
       if (idx > -1) {
         output = this.outputs[idx];
@@ -127,7 +130,7 @@
   function _handleObjectClone(input, mMap, options) {
     // First we make sure that we aren't dealing with a circular reference.
     var _selfRef = mMap.get(input);
-    if (_selfRef !== null) {
+    if (_selfRef !== undefined) {
       return _selfRef;
     }
 
