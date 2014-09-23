@@ -11,7 +11,7 @@ It is meant to be:
   `replaceState()`, etc), and therefore agnostic to types such as `File`,
   `Blob`, etc (which also allows it to be synchronous in the first place).
 * Serve the <strong>majority of use cases out of the box</strong>, but also
-  provide a mechanism to be extensible (coming soon).
+  provide a mechanism to be extensible.
 * Able to copy functions (including function objects) by reference.
   <strong>This is the only property that's copied by reference.</strong>
   See above about serving the *majority* of use cases.
