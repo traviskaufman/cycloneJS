@@ -5,7 +5,7 @@
   "main": "cyclone.js",
   "scripts": {
     "pretest": "./node_modules/.bin/jshint *.js test/*.js",
-    "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --format html -- --require test/init --reporter spec test/*.mspec.js",
+    "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --format html -- --require test/init --reporter spec test/*.js",
     "posttest": "./node_modules/.bin/istanbul check-coverage --statements 100 --branches 100 --functions 100 --lines 100"
   },
   "repository": {
@@ -30,7 +30,7 @@
   },
   "testling": {
     "harness": "mocha",
-    "files": "test/cyclone.mspec.js",
+    "files": "test/cyclone.spec.js",
     "browsers": {
       "ie": [
         9,
