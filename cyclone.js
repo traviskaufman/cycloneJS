@@ -180,6 +180,10 @@
         output = _handleRegExpClone(val);
         break;
 
+      case '[object ArrayBuffer]':
+        output = _handleArrayBufferClone(input);
+        break;
+
       case '[object Array]':
         output = new Array(input.length);
         isCollection = true;
@@ -199,6 +203,9 @@
         // be passed directly into the copied object.
         if (_isFunc(input) && (options.allowFunctions === true)) {
           output = input;
+        } else if (_isTypedArray(input)) {
+          // If it is a typed array, clone it according to the W3C spec
+          output = _handleTypedArrayClone(input);
         } else {
           throw new TypeError(
             'Don\'t know how to clone object of type ' + obType
@@ -263,6 +270,32 @@
         output[prop] = outputVal;
       }
     });
+  }
+
+  // Handles the cloning of ArrayBuffer objects, as specified in the W3C
+  // spec.
+  function _handleArrayBufferClone(buf) {
+    var dst = new ArrayBuffer(buf.byteLength);
+    for (var i = 0, l = buf.byteLength; i < l; i++) {
+      dst[i] = buf[i];
+    }
+    return dst;
+  }
+
+  function _isTypedArray(obj) {
+    var Ctor = Object.getPrototypeOf(obj).constructor;
+    return /^(?:.+)Array$/.test(Ctor.name);
+  }
+
+  // Handles the cloning of TypedArray objects, as specified in the W3C
+  // spec.
+  function _handleTypedArrayClone(typedArray) {
+    var TypedArray = Object.getPrototypeOf(typedArray).constructor;
+    return new TypedArray(
+      _handleArrayBufferClone(typedArray.buffer),
+      typedArray.byteOffset,
+      typedArray.length
+    );
   }
 
   function _attemptCustomClone(obj) {

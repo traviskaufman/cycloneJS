@@ -27,6 +27,7 @@ It can handle objects containing:
 * Date objects
 * RegExp objects
 * Array objects
+* TypedArray and ArrayBuffer object
 * Object (or "plain") objects
 * In most cases, Objects instantiated with the use of a custom constructor (e.g. `function Foo() { this.bar = 'baz' }; var cloneable = new Foo();`)
 * Cyclic references to itself, including nested cyclic references
