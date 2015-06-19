@@ -185,7 +185,7 @@
         break;
 
       case '[object Array]':
-        output = new Array(input.length);
+        output = [];
         isCollection = true;
         break;
 
