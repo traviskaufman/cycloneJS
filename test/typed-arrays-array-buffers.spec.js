@@ -66,7 +66,7 @@ function assertCorrectByteSize(byteSize) {
   if (byteSize != byteSize) {
     throw new TypeError('invalid byteSize number');
   }
-  if ([8, 16, 32, 64].indexOf(byteSize) < 0) {
+  if ([1, 2, 4, 8].indexOf(byteSize) < 0) {
     throw new Error('invalid byteSize ' + byteSize);
   }
 }
