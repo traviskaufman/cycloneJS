@@ -155,10 +155,10 @@ CY.clone($('#main')); // Returns a cloned jQuery object.
 
 You can erase all custom cloning procedures defined by calling `CY.clearCustomCloneProcedures()`.
 
-## MIT License
+## License
 The MIT License (MIT)
 
-Copyright (c) 2014 Travis Kaufman
+Copyright (c) 2016 Travis Kaufman
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
