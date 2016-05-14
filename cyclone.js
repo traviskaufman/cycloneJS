@@ -11,25 +11,9 @@
 (function(root) {
   'use strict';
 
-  var __call__ = Function.prototype.call;
-  var _hasOwn = _bind(__call__, {}.hasOwnProperty);
-  var _toString = _bind(__call__, {}.toString);
-  var _slice = _bind(__call__, [].slice);
-
-  // Many environments seem to not support ES5's native bind as of now.
-  // Because of this, we'll use our own implementation.
-  function _bind(fn, ctx) {
-    // Get a locally-scoped version of _slice here.
-    var _slice = [].slice;
-    // Like native bind, an arbitrary amount of arguments can be passed into
-    // this function which will automatically be bound to it whenever it's
-    // called.
-    var boundArgs = _slice.call(arguments, 2);
-
-    return function() {
-      return fn.apply(ctx, boundArgs.concat(_slice.call(arguments)));
-    };
-  }
+  var _hasOwn = Object.prototype.hasOwnProperty;
+  var _toString = Object.prototype.toString;
+  var _slice = Array.prototype.slice;
 
   function _isFunc(obj) {
     return (typeof obj === 'function');
@@ -37,9 +21,9 @@
 
   // Quick and dirty shallow-copy functionality for options hash
   function _mergeParams(src/*, target1, ..., targetN*/) {
-    return _slice(arguments, 1).reduce(function(target, mixin) {
+    return _slice.call(arguments, 1).reduce(function(target, mixin) {
       for (var key in mixin) {
-        if (_hasOwn(mixin, key) && !_hasOwn(target, key)) {
+        if (_hasOwn.call(mixin, key) && !_hasOwn.call(target, key)) {
           target[key] = mixin[key];
         }
       }
@@ -146,7 +130,7 @@
     // instance of the object using its current value, so we save that in this
     // variable.
     var val = input.valueOf();
-    var obType = _toString(input);
+    var obType = _toString.call(input);
     var output;
     // We define a collection as either an array of Objects other than String,
     // Number, Boolean, Date, or RegExp objects. Basically it's any structure
@@ -252,7 +236,7 @@
     // (assigned as a reference).
     Object.getOwnPropertyNames(input).forEach(function(prop) {
       var desc = Object.getOwnPropertyDescriptor(input, prop);
-      var isNonAccessor = _hasOwn(desc, 'value');
+      var isNonAccessor = _hasOwn.call(desc, 'value');
       var inputVal = isNonAccessor ? desc.value : desc.get();
       var outputVal = _iSClone(inputVal, mMap, options);
       // If `options.preserveDescriptors` is true, only then do we preserve
